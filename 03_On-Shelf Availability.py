@@ -1,4 +1,9 @@
 # Databricks notebook source
+# MAGIC %md 
+# MAGIC You may find this series of notebooks at https://github.com/databricks-industry-solutions/on-shelf-availability. For more information about this solution accelerator, visit https://www.databricks.com/solutions/accelerators/on-shelf-availability.
+
+# COMMAND ----------
+
 # MAGIC %md The purpose of this notebook is to forecast sales over an historical period and then use those forecasted values to identify potential on-shelf availability concerns.  This notebook has been developed by [Tredence](https://www.tredence.com/) in partnership with Databricks.
 
 # COMMAND ----------
