@@ -89,7 +89,7 @@ inventory_schema = StructType([
        schema = inventory_schema,
        dateFormat = 'yyyyMMdd'
        )
-   .repartition(sc.defaultParallelism) # repartition to ensure it's written in a manner that supports downstream parallalism
+   .repartition(sc.defaultParallelism) # repartition to ensure it's written in a manner that supports downstream parallelism
    .write
       .format('delta')
       .mode('overwrite')
