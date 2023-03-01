@@ -255,7 +255,7 @@ inventory_safety_stock = (
     # safety stock for sales velocity is avg daily sales units * min_lead_time
     .withColumn('ss_sales_velocity', f.expr('daily_sales_units * min_lead_time'))
   
-    # use the lower of the min_expected_stock at replinishment or sales_velocity-derived stock requirement as safety stock
+    # use the lower of the min_expected_stock at replenishment or sales_velocity-derived stock requirement as safety stock
     .withColumn('safety_stock', f.expr('CASE WHEN min_expected_stock < ss_sales_velocity THEN min_expected_stock ELSE ss_sales_velocity END'))
     .withColumn('safety_stock', f.expr('CASE WHEN replenishment_flag != 1 THEN 0 ELSE safety_stock END'))
     .withColumn('safety_stock', f.expr('COALESCE(safety_stock,0)'))
@@ -293,7 +293,7 @@ display(inventory_safety_stock)
 # MAGIC %md With a safety stock level defined for each store-SKU, we can now identify dates where:</p>
 # MAGIC 
 # MAGIC 1. The on-hand inventory is less than the safety stock level (*on_hand_less_than_safety_stock*)
-# MAGIC 2. The requested replinishment units are not sufficient to meet safety stock requirements (*insufficient_inventory_pipeline_units*)
+# MAGIC 2. The requested replenishment units are not sufficient to meet safety stock requirements (*insufficient_inventory_pipeline_units*)
 # MAGIC 3. The inventory pipeline is one day away from not being able to fulfill stocking requirements (*insufficient_lead_time*)
 # MAGIC 
 # MAGIC Each of these conditions represents an inventory management problem which requires addressing. The first two of these conditions may be calculated as follows:
@@ -466,7 +466,7 @@ zero_sales_days = (
   
   inventory 
   
-    # flag the occurance of first zero sales day in a series
+    # flag the occurrence of first zero sales day in a series
     .withColumn('sales_change_flag', f.expr('''
         CASE 
           WHEN total_sales_units=0 AND LAG(total_sales_units,1) OVER(PARTITION BY store_id, sku ORDER BY date) != 0 THEN 1 
@@ -523,7 +523,7 @@ display(zero_sales_inventory.orderBy('store_id','sku','date'))
 # DBTITLE 1,Combining all flags
 all_alerts = (
   consolidated_oos_alerts.alias('oos') # OOS alert
-    .join(phantom_inventory.alias('pi'), on=['store_id','sku','date'], how='leftouter') # pahntom inventory indicator
+    .join(phantom_inventory.alias('pi'), on=['store_id','sku','date'], how='leftouter') # phantom inventory indicator
     .join(zero_sales_inventory, on=['store_id','sku','date'], how='leftouter') # zero sales alert
     .selectExpr(
       'date',
